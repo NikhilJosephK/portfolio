@@ -49,11 +49,11 @@ export default function Hero() {
         text="FRONTEND*DEVELOPER*SINCE*2022*"
         onHover="speedUp"
         spinDuration={20}
-        className="!absolute !w-96 !h-96 !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2"
+        className="!absolute !w-96 !h-96 !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2 font-extralight"
       />
       <MemoSplitText
-        text="Hey, it's (Nick)hil!"
-        className="text-2xl font-semibold text-center w-full !absolute !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2"
+        text="Hey, it's Nikhil!"
+        className="text-2xl font-bold text-center w-full !absolute !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2"
         delay={100}
         duration={0.6}
         ease="power3.out"
