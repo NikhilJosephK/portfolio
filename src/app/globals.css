@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@source "./src/reactbits/components/FlowingMenu/**/*.{js,ts,jsx,tsx}";
+
+/* 2️⃣ Extend the theme with new values */
+@theme {
+  --translate-101: 101%; /* replaces theme.extend.translate['101'] */
+
+  @keyframes marquee {   /* replaces theme.extend.keyframes.marquee */
+    from { transform: translateX(0%); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* replaces theme.extend.animation.marquee */
+  --animate-marquee: marquee 15s linear infinite;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
