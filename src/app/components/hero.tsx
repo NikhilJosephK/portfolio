@@ -20,7 +20,7 @@ export default function Hero() {
   const [GridDistortionComp, setGridDistortionComp] =
     useState<React.FC<GridDistortionProps> | null>(null);
   const [isHelloWorldHidden, setIsHelloWorldHidden] = useState<boolean>(false);
-  const [intro, setIntro] = useState<React.ReactNode | null>(null);
+
 
   const from = useMemo(() => ({ opacity: 0, y: 40 }), []);
   const to = useMemo(() => ({ opacity: 1, y: 0 }), []);
@@ -32,25 +32,10 @@ export default function Hero() {
     );
     // Need to wrap in a function that returns the component
     setGridDistortionComp(() => mod.default);
-    setIntro(() => (
-      <MemoSplitText
-        text="I'm (Nick)hil"
-        className="text-2xl font-medium text-center w-full !absolute !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2"
-        delay={100}
-        duration={0.6}
-        ease="power3.out"
-        splitType="chars"
-        from={from}
-        to={to}
-        threshold={0.1}
-        rootMargin="-100px"
-        textAlign="center"
-      />
-    ));
   }, []);
 
   return (
-    <section className="mx-auto w-full h-screen relative">
+    <section className="mx-auto w-full h-screen relative overflow-hidden">
       <CircularText
         text="FRONTEND*DEVELOPER*SINCE*2022*"
         onHover="speedUp"
@@ -113,7 +98,15 @@ export default function Hero() {
             onLetterAnimationComplete={handleAnimationComplete}
           />
         )}
-        {intro || null}
+        <h1
+          className={`text-2xl font-medium text-center w-full !absolute !top-1/2 !left-1/2 !-translate-x-1/2 !-translate-y-1/2 transition-all duration-1000 ${
+            !isHelloWorldHidden
+              ? "opacity-0 scale-200"
+              : "opacity-100 scale-100"
+          }`}
+        >
+          I&apos;m (Nick)hil
+        </h1>
       </div>
     </section>
   );
