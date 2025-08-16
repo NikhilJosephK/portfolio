@@ -1,3 +1,3 @@
 export { default as Hero } from "./hero";
-export { default as TechStack } from "./tech-stack";
+export { Projects } from "./projects";
 export { Contact } from "./contact";

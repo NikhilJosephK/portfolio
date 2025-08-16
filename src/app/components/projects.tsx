@@ -2,7 +2,7 @@
 
 import CardSwap, { Card } from "@/reactbits/components/CardSwap/CardSwap";
 
-export default function TechStack() {
+export function Projects() {
   return (
     <section className="h-screen grid place-items-center">
       <div className="overflow-hidden max-w-6xl w-full mx-auto border border-white/50 rounded-4xl">
