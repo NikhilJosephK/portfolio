@@ -1,8 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { BigArrow } from "./icons/big-arrow";
+import FlyingPosters from "@/reactbits/components/FlyingPosters/FlyingPosters";
 
 export function TechStack() {
+  const items = [
+    "https://picsum.photos/500/500?grayscale",
+    "https://picsum.photos/600/600?grayscale",
+    "https://picsum.photos/400/400?grayscale",
+  ];
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    setTime(new Date().getHours() + ":" + new Date().getMinutes());
+  }, []);
+
   return (
     <section>
       <div className="flex flex-col h-screen justify-start">
@@ -17,15 +29,28 @@ export function TechStack() {
           ))}
         </div>
         <div className="flex justify-center items-stretch bg-black  overflow-auto h-full">
-          <div className="basis-full  border-[0.5px] border-black w-full bg-white h-full rounded-[20px]">
-            <p className="text-black font-light text-sm p-5">
-              Back in 2022, I started my journey with just HTML, CSS and
-              JAVASCRIPT. I have come a long way since then, picked up some
-              other stacks on the way and my pocket is still not full!
+          <div className="basis-full  border-[0.5px] border-black w-full bg-white h-full rounded-[20px] rounded-br-[100px]">
+            <p className="text-black font-light text-sm p-5 leading-6">
+              Back in 2022, Started my journey with just HTML, CSS and
+              JAVASCRIPT. Came a long way since then, picked up a few things on
+              the way and my pocket still ain&apos;t full!
             </p>
           </div>
-          <div className="basis-[800px] shrink-0  border-[0.5px] border-black w-full bg-white h-full rounded-[20px]"></div>
-          <div className="basis-full border-[0.5px] border-black w-full bg-white h-full rounded-[20px] flex items-end justify-end">
+          {/*  */}
+          <div className="basis-[800px] shrink-0  border-[0.5px] border-black w-full bg-white h-full rounded-[20px]">
+            <div style={{ height: "100%", position: "relative" }}>
+              <FlyingPosters
+                items={items}
+                planeWidth={400}
+                planeHeight={400}
+              />
+            </div>
+          </div>
+          {/*  */}
+          <div className="basis-full border-[0.5px] border-black w-full bg-white h-full rounded-[20px] flex items-end justify-between flex-col">
+            <p className="text-4xl text-black w-full text-left pt-5 pl-5 font-light flex flex-col">
+              {time}
+            </p>
             <div className="flex items-end gap-4 justify-end pr-5 pb-5">
               <p className="text-black font-light text-base leading-tight">
                 Scroll that section!
@@ -38,3 +63,6 @@ export function TechStack() {
     </section>
   );
 }
+
+
+
