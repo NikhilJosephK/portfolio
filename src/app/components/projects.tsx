@@ -18,8 +18,13 @@ export function Projects() {
         setHello(Math.round(val));
       }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    document
+      .querySelector(".homepage")
+      ?.addEventListener("scroll", handleScroll);
+    return () =>
+      document
+        .querySelector(".homepage")
+        ?.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
