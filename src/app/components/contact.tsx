@@ -1,59 +1,56 @@
 "use client";
-
-import FlowingMenu from "@/reactbits/components/FlowingMenu/FlowingMenu";
-import ProfileCard from "@/reactbits/components/ProfileCard/ProfileCard";
+import SplashCursor from "@/reactbits/animations/SplashCursor/SplashCursor";
+import Ballpit from "@/reactbits/backgrounds/Ballpit/Ballpit";
+import { BigArrow } from "@/app/components/icons/big-arrow";
 
 export function Contact() {
-  const demoItems = [
-    {
-      link: "#",
-      text: "LinkedIn",
-      image: "https://picsum.photos/600/400?random=1",
-    },
-    {
-      link: "#",
-      text: "Github",
-      image: "https://picsum.photos/600/400?random=2",
-    },
-    {
-      link: "#",
-      text: "Instagram",
-      image: "https://picsum.photos/600/400?random=3",
-    },
-    {
-      link: "#",
-      text: "Sequoia",
-      image: "https://picsum.photos/600/400?random=4",
-    },
-  ];
   return (
-    <section className="h-screen grid place-items-center w-full">
-      <div className="flex items-center justify-around gap-4 w-full">
-        <div className="basis-1/2 flex justify-center">
-          <ProfileCard
-            name="Nikhil Joseph K"
-            title="Frontend Developer"
-            handle="nikhiljosephk"
-            status="Online"
-            contactText="Contact Me"
-            showUserInfo={true}
-            enableTilt={true}
-            enableMobileTilt={false}
-            onContactClick={() => console.log("Contact clicked")}
-            showBehindGradient={true}
-            iconUrl="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/iconpattern.png"
-            grainUrl="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/grain.webp"
-            avatarUrl="https://reactbits.dev/assets/person.png"
-            className="w-fit"
-          />
+    <section className="h-screen overflow-hidden w-full pb-16  px-20 bg-white">
+      <div className="flex items-end gap-5 justify-between">
+        <p className="text-black text-[200px] font-extralight tracking-[-23px] relative top-24">
+          Contact Me.
+        </p>
+        <div className="flex flex-col items-end">
+          <p className="text-black text-xl font-extralight text-right">
+            Linkedin
+          </p>
+          <p className="text-black text-xl font-extralight text-right">
+            GitHub
+          </p>
+          <p className="text-black text-xl font-extralight text-right">
+            nikhilnjk@gmail.com
+          </p>
+          <p className="text-black text-xl font-extralight text-right">
+            9746476718
+          </p>
+          <BigArrow className="w-[5rem] h-[5rem] rotate-180 mt-10" />
         </div>
+      </div>
+      <div className="flex items-end">
+        <SplashCursor TRANSPARENT={false} />
         <div
-          style={{ height: "90vh", position: "relative" }}
-          className="w-full basis-1/2 flowing-menu"
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            minHeight: "500px",
+            maxHeight: "500px",
+          }}
+          className="mx-auto w-full border border-slate-200 rounded-3xl flex items-end bg-black"
         >
-          <FlowingMenu items={demoItems} />
+          <Ballpit
+            count={100}
+            gravity={0.01}
+            friction={0.9975}
+            wallBounce={0.95}
+            followCursor={false}
+            colors={["#FCC61D", "#BBDCE5", "#E4004B"]}
+            ambientColor="00"
+          />
         </div>
       </div>
     </section>
   );
 }
+  
+
+
