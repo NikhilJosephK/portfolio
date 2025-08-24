@@ -750,11 +750,15 @@ function processPointerInteraction() {
 
 function onTouchStart(e: TouchEvent) {
   if (e.touches.length > 0) {
-    e.preventDefault();
-    pointerPosition.set(e.touches[0].clientX, e.touches[0].clientY);
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    pointerPosition.set(x, y);
+
+    let handled = false;
     for (const [elem, data] of pointerMap) {
       const rect = elem.getBoundingClientRect();
       if (isInside(rect)) {
+        handled = true;
         data.touching = true;
         updatePointerData(data, rect);
         if (!data.hover) {
@@ -764,13 +768,20 @@ function onTouchStart(e: TouchEvent) {
         data.onMove(data);
       }
     }
+
+    if (handled) {
+      e.preventDefault();
+    }
   }
 }
 
 function onTouchMove(e: TouchEvent) {
   if (e.touches.length > 0) {
-    e.preventDefault();
-    pointerPosition.set(e.touches[0].clientX, e.touches[0].clientY);
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    pointerPosition.set(x, y);
+
+    let handled = false;
     for (const [elem, data] of pointerMap) {
       const rect = elem.getBoundingClientRect();
       updatePointerData(data, rect);
@@ -781,9 +792,15 @@ function onTouchMove(e: TouchEvent) {
           data.onEnter(data);
         }
         data.onMove(data);
+        handled = true;
       } else if (data.hover && data.touching) {
         data.onMove(data);
+        handled = true;
       }
+    }
+
+    if (handled) {
+      e.preventDefault();
     }
   }
 }
