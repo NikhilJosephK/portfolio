@@ -645,7 +645,10 @@ export default function FlyingPosters({
       className={`w-full h-full overflow-hidden relative z-2 ${className}`}
       {...props}
     >
-      <canvas ref={canvasRef} className="block w-full h-full" />
+      <canvas
+        ref={canvasRef}
+        className="block !w-full h-full"
+      />
     </div>
   );
 }
