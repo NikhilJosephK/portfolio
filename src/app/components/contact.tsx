@@ -5,9 +5,9 @@ import { BigArrow } from "@/app/components/icons/big-arrow";
 
 export function Contact() {
   return (
-    <section className="h-screen overflow-hidden w-full pb-16  px-20 bg-white">
-      <div className="flex items-end gap-5 justify-between">
-        <p className="text-black text-[200px] font-extralight tracking-[-23px] relative top-24">
+    <section className="h-screen overflow-hidden w-full pb-16  px-20 bg-white max-md:px-5">
+      <div className="flex items-end gap-5 justify-between max-sm:flex-col-reverse">
+        <p className="text-black text-[200px] font-extralight tracking-[-23px] relative top-24 max-[1350px]:text-[150px] max-[1350px]:top-12 max-[1350px]:trackin-[-5px] max-lg:text-6xl max-lg:top-0 max-lg:tracking-[-2px]">
           Contact Me.
         </p>
         <div className="flex flex-col items-end">

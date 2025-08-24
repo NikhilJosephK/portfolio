@@ -3,9 +3,9 @@ import { Hero, Projects, Contact, TechStack } from "./components";
 export default function Home() {
   return (
     <div className="bg-black text-white relative homepage">
-      <Hero />
+      {/* <Hero />
       <Projects />
-      <TechStack />
+      <TechStack /> */}
       <Contact />
     </div>
   );
