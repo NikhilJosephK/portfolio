@@ -34,9 +34,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       {...rest}
-      className={`absolute top-1/2 left-1/2 rounded-xl border border-white bg-black [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] ${customClass ?? ""} ${rest.className ?? ""}`.trim()}
+      className={`absolute top-1/2 left-1/2 rounded-xl border border-white bg-black [transform-style:preserve-3d] [will-change:transform] [backface-visibility:hidden] overflow-hidden ${
+        customClass ?? ""
+      } ${rest.className ?? ""}`.trim()}
     />
-  ),
+  )
 );
 Card.displayName = "Card";
 
@@ -52,7 +54,7 @@ const makeSlot = (
   i: number,
   distX: number,
   distY: number,
-  total: number,
+  total: number
 ): Slot => ({
   x: i * distX,
   y: -i * distY,
@@ -106,7 +108,7 @@ const CardSwap: React.FC<CardSwapProps> = ({
 
   const childArr = useMemo(
     () => Children.toArray(children) as ReactElement<CardProps>[],
-    [children],
+    [children]
   );
   const refs = useMemo(
     () => childArr.map(() => React.createRef<HTMLDivElement>()),
@@ -234,13 +236,13 @@ const CardSwap: React.FC<CardSwapProps> = ({
             onCardClick?.(i);
           },
         } as CardProps & React.RefAttributes<HTMLDivElement>)
-      : child,
+      : child
   );
 
   return (
     <div
       ref={container}
-      className="absolute bottom-0 right-0 transform translate-x-[5%] translate-y-[20%] origin-bottom-right perspective-[900px] overflow-visible max-[768px]:translate-x-[25%] max-[768px]:translate-y-[25%] max-[768px]:scale-[0.75] max-[480px]:translate-x-[25%] max-[480px]:translate-y-[25%] max-[480px]:scale-[0.55]"
+      className="absolute bottom-0 right-0 transform translate-x-[5%] translate-y-[20%] origin-bottom-right perspective-[900px] overflow-visible max-[768px]:translate-x-[0%] max-[768px]:translate-y-[10%] max-[768px]:scale-[0.75] max-[480px]:translate-x-[0%] max-[480px]:translate-y-[5%] max-[480px]:scale-[0.55]"
       style={{ width, height }}
     >
       {rendered}

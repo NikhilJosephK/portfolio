@@ -15,7 +15,8 @@ export function Projects() {
             sectionRef.current.getBoundingClientRect().height) *
           100;
         const val = (percentage / -50) * 100;
-        setHello(Math.round(val));
+        const hundred = Math.round(val) + 1;
+        setHello(hundred);
       }
     };
     document
@@ -49,72 +50,76 @@ export function Projects() {
           autoPlay
           muted
           loop
-          className="object-cover rounded-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className={` ${
+            hello >= 100 ? "rounded-none" : "rounded-2xl"
+          } object-cover rounded-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
           style={{
             width: `100%`,
-            height: `${hello > 0 && hello < 100 ? hello : "100vh"}%`,
+            height: `${hello > 0 && hello <= 100 ? hello : "100vh"}%`,
           }}
         />
-        <div className="overflow-hidden max-w-6xl w-full mx-auto border bg-black border-white/50 rounded-4xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="overflow-hidden max-w-6xl max-xl:max-w-5xl max-lg:rounded-none w-full mx-auto border bg-black border-white/50 rounded-4xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <div
             style={{ height: "500px", position: "relative" }}
-            className="flex items-center"
+            className="flex items-center max-lg:flex-col"
           >
-            <h1 className="text-2xl text-left font-semibold pl-24 flex flex-col gap-2">
+            <h1 className="text-2xl text-left font-semibold lg:pl-24 max-lg:pt-10 max-lg:w-full max-lg:pl-10 max-sm:text-xl flex flex-col gap-2">
               Here are some of the projects <br /> I&apos;ve worked on.
               <span className="text-slate-100 text-lg font-extralight mt-1">
                 Feel free to check it out!
               </span>
             </h1>
-            <CardSwap
-              cardDistance={60}
-              verticalDistance={70}
-              delay={5000}
-              pauseOnHover={false}
-            >
-              <Card>
-                <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                  Card 1
-                </h3>
-                <div className="w-full h-full m-4 bg-white rounded-2xl">
-                  <video
-                    src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-one.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    className="w-full h-full object-cover rounded-2xl"
-                  />
-                </div>
-              </Card>
-              <Card>
-                <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                  Card 2
-                </h3>
-                <div className="w-full h-full m-4 bg-white rounded-2xl">
-                  <video
-                    src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-two.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    className="w-full h-full object-cover rounded-2xl"
-                  />
-                </div>
-              </Card>
-              <Card>
-                <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                  Card 3
-                </h3>
-                <div className="w-full h-full m-4 bg-white rounded-2xl">
-                  <video
-                    src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-3.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    className="w-full h-full object-cover rounded-2xl"
-                  />
-                </div>
-              </Card>
-            </CardSwap>
+            <div className="max-lg:w-full">
+              <CardSwap
+                cardDistance={60}
+                verticalDistance={70}
+                delay={5000}
+                pauseOnHover={false}
+              >
+                <Card>
+                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                    Card 1
+                  </h3>
+                  <div className="w-full h-full m-4 bg-white rounded-2xl">
+                    <video
+                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-one.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                  </div>
+                </Card>
+                <Card>
+                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                    Card 2
+                  </h3>
+                  <div className="w-full h-full m-4 bg-white rounded-2xl">
+                    <video
+                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-two.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                  </div>
+                </Card>
+                <Card>
+                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                    Card 3
+                  </h3>
+                  <div className="w-full h-full m-4 bg-white rounded-2xl">
+                    <video
+                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-3.mp4"
+                      autoPlay
+                      muted
+                      loop
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                  </div>
+                </Card>
+              </CardSwap>
+            </div>
           </div>
         </div>
       </div>
