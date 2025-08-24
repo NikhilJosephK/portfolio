@@ -44,7 +44,7 @@ export function Contact() {
             wallBounce={0.95}
             followCursor={false}
             colors={["#FCC61D", "#BBDCE5", "#E4004B"]}
-            ambientColor="00"
+            ambientColor={0}
           />
         </div>
       </div>

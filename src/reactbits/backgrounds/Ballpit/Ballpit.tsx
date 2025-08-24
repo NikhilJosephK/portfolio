@@ -21,6 +21,11 @@ import {
   ACESFilmicToneMapping,
   Raycaster,
   Plane,
+  OrthographicCamera,
+  Mesh,
+  Material,
+  type MeshPhysicalMaterialParameters,
+  type ColorRepresentation,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { Observer } from "gsap/Observer";
@@ -44,9 +49,15 @@ interface SizeData {
   pixelRatio: number;
 }
 
+interface PostprocessingController {
+  setSize: (width: number, height: number) => void;
+  render: () => void;
+  dispose: () => void;
+}
+
 class X {
   #config: XConfig;
-  #postprocessing: any;
+  #postprocessing: PostprocessingController | undefined;
   #resizeObserver?: ResizeObserver;
   #intersectionObserver?: IntersectionObserver;
   #resizeTimer?: number;
@@ -57,7 +68,7 @@ class X {
   #isVisible: boolean = false;
 
   canvas!: HTMLCanvasElement;
-  camera!: PerspectiveCamera;
+  camera!: PerspectiveCamera | OrthographicCamera;
   cameraMinAspect?: number;
   cameraMaxAspect?: number;
   cameraFov!: number;
@@ -92,7 +103,7 @@ class X {
 
   #initCamera() {
     this.camera = new PerspectiveCamera();
-    this.cameraFov = this.camera.fov;
+    this.cameraFov = (this.camera as PerspectiveCamera).fov;
   }
 
   #initScene() {
@@ -132,12 +143,12 @@ class X {
     }
     this.#intersectionObserver = new IntersectionObserver(
       this.#onIntersection.bind(this),
-      { root: null, rootMargin: "0px", threshold: 0 },
+      { root: null, rootMargin: "0px", threshold: 0 }
     );
     this.#intersectionObserver.observe(this.canvas);
     document.addEventListener(
       "visibilitychange",
-      this.#onVisibilityChange.bind(this),
+      this.#onVisibilityChange.bind(this)
     );
   }
 
@@ -167,17 +178,17 @@ class X {
   }
 
   #updateCamera() {
-    this.camera.aspect = this.size.width / this.size.height;
-    if (this.camera.isPerspectiveCamera && this.cameraFov) {
-      if (this.cameraMinAspect && this.camera.aspect < this.cameraMinAspect) {
-        this.#adjustFov(this.cameraMinAspect);
-      } else if (
-        this.cameraMaxAspect &&
-        this.camera.aspect > this.cameraMaxAspect
-      ) {
-        this.#adjustFov(this.cameraMaxAspect);
-      } else {
-        this.camera.fov = this.cameraFov;
+    const aspect = this.size.width / this.size.height;
+    if (this.camera instanceof PerspectiveCamera) {
+      this.camera.aspect = aspect;
+      if (this.cameraFov) {
+        if (this.cameraMinAspect && aspect < this.cameraMinAspect) {
+          this.#adjustFov(this.cameraMinAspect);
+        } else if (this.cameraMaxAspect && aspect > this.cameraMaxAspect) {
+          this.#adjustFov(this.cameraMaxAspect);
+        } else {
+          this.camera.fov = this.cameraFov;
+        }
       }
     }
     this.camera.updateProjectionMatrix();
@@ -186,18 +197,20 @@ class X {
 
   #adjustFov(aspect: number) {
     const tanFov = Math.tan(MathUtils.degToRad(this.cameraFov / 2));
-    const newTan = tanFov / (this.camera.aspect / aspect);
-    this.camera.fov = 2 * MathUtils.radToDeg(Math.atan(newTan));
+    const newTan =
+      tanFov / ((this.camera as PerspectiveCamera).aspect / aspect);
+    (this.camera as PerspectiveCamera).fov =
+      2 * MathUtils.radToDeg(Math.atan(newTan));
   }
 
   updateWorldSize() {
-    if (this.camera.isPerspectiveCamera) {
+    if (this.camera instanceof PerspectiveCamera) {
       const fovRad = (this.camera.fov * Math.PI) / 180;
       this.size.wHeight =
         2 * Math.tan(fovRad / 2) * this.camera.position.length();
       this.size.wWidth = this.size.wHeight * this.camera.aspect;
-    } else if ((this.camera as any).isOrthographicCamera) {
-      const cam = this.camera as any;
+    } else if (this.camera instanceof OrthographicCamera) {
+      const cam = this.camera;
       this.size.wHeight = cam.top - cam.bottom;
       this.size.wWidth = cam.right - cam.left;
     }
@@ -219,9 +232,9 @@ class X {
   get postprocessing() {
     return this.#postprocessing;
   }
-  set postprocessing(value: any) {
+  set postprocessing(value: PostprocessingController | undefined) {
     this.#postprocessing = value;
-    this.render = value.render.bind(value);
+    if (value) this.render = value.render.bind(value);
   }
 
   #onIntersection(entries: IntersectionObserverEntry[]) {
@@ -263,24 +276,67 @@ class X {
   }
 
   clear() {
+    const hasDispose = (
+      resource: unknown
+    ): resource is { dispose: () => void } => {
+      return (
+        typeof resource === "object" &&
+        resource !== null &&
+        typeof (resource as { dispose?: unknown }).dispose === "function"
+      );
+    };
+    const disposeMaterial = (material: Material) => {
+      const maybeDispose = (resource: unknown) => {
+        if (hasDispose(resource)) {
+          resource.dispose();
+        }
+      };
+
+      const mapKeys: Array<keyof Material | string> = [
+        "map",
+        "normalMap",
+        "roughnessMap",
+        "metalnessMap",
+        "envMap",
+        "emissiveMap",
+        "alphaMap",
+        "bumpMap",
+        "displacementMap",
+        "aoMap",
+        "lightMap",
+        "clearcoatMap",
+        "clearcoatRoughnessMap",
+        "clearcoatNormalMap",
+        "sheenColorMap",
+        "sheenRoughnessMap",
+        "specularMap",
+        "specularColorMap",
+        "specularIntensityMap",
+        "transmissionMap",
+        "thicknessMap",
+      ];
+      for (const key of mapKeys) {
+        // material is a union; safe indexed access guarded by maybeDispose
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        maybeDispose(
+          (material as unknown as Record<string, unknown>)[key as string]
+        );
+      }
+      material.dispose();
+    };
+
     this.scene.traverse((obj) => {
-      if (
-        (obj as any).isMesh &&
-        typeof (obj as any).material === "object" &&
-        (obj as any).material !== null
-      ) {
-        Object.keys((obj as any).material).forEach((key) => {
-          const matProp = (obj as any).material[key];
-          if (
-            matProp &&
-            typeof matProp === "object" &&
-            typeof matProp.dispose === "function"
-          ) {
-            matProp.dispose();
-          }
-        });
-        (obj as any).material.dispose();
-        (obj as any).geometry.dispose();
+      if ((obj as Mesh).isMesh) {
+        const mesh = obj as Mesh;
+        const mat = mesh.material;
+        if (Array.isArray(mat)) {
+          mat.forEach((m) => m && disposeMaterial(m));
+        } else if (mat) {
+          disposeMaterial(mat);
+        }
+        if (mesh.geometry) {
+          mesh.geometry.dispose();
+        }
       }
     });
     this.scene.clear();
@@ -301,7 +357,7 @@ class X {
     this.#intersectionObserver?.disconnect();
     document.removeEventListener(
       "visibilitychange",
-      this.#onVisibilityChange.bind(this),
+      this.#onVisibilityChange.bind(this)
     );
   }
 }
@@ -402,7 +458,7 @@ class W {
           vel.toArray(velocityData, base);
           otherPos.add(correction);
           otherVel.add(
-            correction.clone().multiplyScalar(Math.max(otherVel.length(), 1)),
+            correction.clone().multiplyScalar(Math.max(otherVel.length(), 1))
           );
           otherPos.toArray(positionData, otherBase);
           otherVel.toArray(velocityData, otherBase);
@@ -447,8 +503,15 @@ class W {
   }
 }
 
+// Lightweight local shader type to avoid importing non-existent types from three version
+type ThreeShader = {
+  uniforms: Record<string, { value: unknown }>;
+  fragmentShader: string;
+  defines?: Record<string, unknown>;
+};
+
 class Y extends MeshPhysicalMaterial {
-  uniforms: { [key: string]: { value: any } } = {
+  uniforms: { [key: string]: { value: number } } = {
     thicknessDistortion: { value: 0.1 },
     thicknessAmbient: { value: 0 },
     thicknessAttenuation: { value: 0.1 },
@@ -456,10 +519,12 @@ class Y extends MeshPhysicalMaterial {
     thicknessScale: { value: 10 },
   };
 
-  constructor(params: any) {
+  constructor(params: MeshPhysicalMaterialParameters) {
     super(params);
-    this.defines = { USE_UV: "" };
-    this.onBeforeCompile = (shader) => {
+    this.onBeforeCompile = (shader: ThreeShader) => {
+      const defines = shader.defines ?? {};
+      defines.USE_UV = "";
+      shader.defines = defines;
       Object.assign(shader.uniforms, this.uniforms);
       shader.fragmentShader =
         `
@@ -484,26 +549,47 @@ class Y extends MeshPhysicalMaterial {
         }
 
         void main() {
-        `,
+        `
       );
       const lightsChunk = ShaderChunk.lights_fragment_begin.replaceAll(
         "RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );",
         `
           RE_Direct( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
           RE_Direct_Scattering(directLight, vUv, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, reflectedLight);
-        `,
+        `
       );
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <lights_fragment_begin>",
-        lightsChunk,
+        lightsChunk
       );
       if (this.onBeforeCompile2) this.onBeforeCompile2(shader);
     };
   }
-  onBeforeCompile2?: (shader: any) => void;
+  onBeforeCompile2?: (shader: ThreeShader) => void;
 }
 
-const XConfig = {
+type SpheresConfig = {
+  count: number;
+  colors: ColorRepresentation[];
+  ambientColor: number;
+  ambientIntensity: number;
+  lightIntensity: number;
+  materialParams: MeshPhysicalMaterialParameters;
+  minSize: number;
+  maxSize: number;
+  size0: number;
+  gravity: number;
+  friction: number;
+  wallBounce: number;
+  maxVelocity: number;
+  maxX: number;
+  maxY: number;
+  maxZ: number;
+  controlSphere0: boolean;
+  followCursor: boolean;
+};
+
+const XConfig: SpheresConfig = {
   count: 200,
   colors: [0, 0, 0],
   ambientColor: 0xffffff,
@@ -549,7 +635,7 @@ interface PointerData {
 const pointerMap = new Map<HTMLElement, PointerData>();
 
 function createPointerData(
-  options: Partial<PointerData> & { domElement: HTMLElement },
+  options: Partial<PointerData> & { domElement: HTMLElement }
 ): PointerData {
   const defaultData: PointerData = {
     position: new Vector2(),
@@ -567,11 +653,11 @@ function createPointerData(
     if (!globalPointerActive) {
       document.body.addEventListener(
         "pointermove",
-        onPointerMove as EventListener,
+        onPointerMove as EventListener
       );
       document.body.addEventListener(
         "pointerleave",
-        onPointerLeave as EventListener,
+        onPointerLeave as EventListener
       );
       document.body.addEventListener("click", onPointerClick as EventListener);
 
@@ -580,14 +666,14 @@ function createPointerData(
         onTouchStart as EventListener,
         {
           passive: false,
-        },
+        }
       );
       document.body.addEventListener(
         "touchmove",
         onTouchMove as EventListener,
         {
           passive: false,
-        },
+        }
       );
       document.body.addEventListener("touchend", onTouchEnd as EventListener, {
         passive: false,
@@ -597,7 +683,7 @@ function createPointerData(
         onTouchEnd as EventListener,
         {
           passive: false,
-        },
+        }
       );
       globalPointerActive = true;
     }
@@ -607,32 +693,32 @@ function createPointerData(
     if (pointerMap.size === 0) {
       document.body.removeEventListener(
         "pointermove",
-        onPointerMove as EventListener,
+        onPointerMove as EventListener
       );
       document.body.removeEventListener(
         "pointerleave",
-        onPointerLeave as EventListener,
+        onPointerLeave as EventListener
       );
       document.body.removeEventListener(
         "click",
-        onPointerClick as EventListener,
+        onPointerClick as EventListener
       );
 
       document.body.removeEventListener(
         "touchstart",
-        onTouchStart as EventListener,
+        onTouchStart as EventListener
       );
       document.body.removeEventListener(
         "touchmove",
-        onTouchMove as EventListener,
+        onTouchMove as EventListener
       );
       document.body.removeEventListener(
         "touchend",
-        onTouchEnd as EventListener,
+        onTouchEnd as EventListener
       );
       document.body.removeEventListener(
         "touchcancel",
-        onTouchEnd as EventListener,
+        onTouchEnd as EventListener
       );
       globalPointerActive = false;
     }
@@ -735,11 +821,11 @@ function onPointerLeave() {
 function updatePointerData(data: PointerData, rect: DOMRect) {
   data.position.set(
     pointerPosition.x - rect.left,
-    pointerPosition.y - rect.top,
+    pointerPosition.y - rect.top
   );
   data.nPosition.set(
     (data.position.x / rect.width) * 2 - 1,
-    (-data.position.y / rect.height) * 2 + 1,
+    (-data.position.y / rect.height) * 2 + 1
   );
 }
 
@@ -753,13 +839,13 @@ function isInside(rect: DOMRect) {
 }
 
 class Z extends InstancedMesh {
-  config: typeof XConfig;
+  config: SpheresConfig;
   physics: W;
   ambientLight: AmbientLight | undefined;
   light: PointLight | undefined;
 
-  constructor(renderer: WebGLRenderer, params: Partial<typeof XConfig> = {}) {
-    const config = { ...XConfig, ...params };
+  constructor(renderer: WebGLRenderer, params: Partial<SpheresConfig> = {}) {
+    const config: SpheresConfig = { ...XConfig, ...params };
     const roomEnv = new RoomEnvironment();
     const pmrem = new PMREMGenerator(renderer);
     const envTexture = pmrem.fromScene(roomEnv).texture;
@@ -776,26 +862,26 @@ class Z extends InstancedMesh {
   #setupLights() {
     this.ambientLight = new AmbientLight(
       this.config.ambientColor,
-      this.config.ambientIntensity,
+      this.config.ambientIntensity
     );
     this.add(this.ambientLight);
     this.light = new PointLight(
       this.config.colors[0],
-      this.config.lightIntensity,
+      this.config.lightIntensity
     );
     this.add(this.light);
   }
 
-  setColors(colors: number[]) {
+  setColors(colors: ColorRepresentation[]) {
     if (Array.isArray(colors) && colors.length > 1) {
-      const colorUtils = (function (colorsArr: number[]) {
-        let baseColors: number[] = colorsArr;
+      const colorUtils = (function (colorsArr: ColorRepresentation[]) {
+        let baseColors: ColorRepresentation[] = colorsArr;
         let colorObjects: Color[] = [];
         baseColors.forEach((col) => {
           colorObjects.push(new Color(col));
         });
         return {
-          setColors: (cols: number[]) => {
+          setColors: (cols: ColorRepresentation[]) => {
             baseColors = cols;
             colorObjects = [];
             baseColors.forEach((col) => {
@@ -856,7 +942,7 @@ interface CreateBallpitReturn {
 
 function createBallpit(
   canvas: HTMLCanvasElement,
-  config: any = {},
+  config: Partial<SpheresConfig> = {}
 ): CreateBallpitReturn {
   const threeInstance = new X({
     canvas,
@@ -877,7 +963,9 @@ function createBallpit(
 
   canvas.style.touchAction = "none";
   canvas.style.userSelect = "none";
-  (canvas.style as any).webkitUserSelect = "none";
+  (
+    canvas.style as CSSStyleDeclaration & { webkitUserSelect?: string }
+  ).webkitUserSelect = "none";
 
   const pointerData = createPointerData({
     domElement: canvas,
@@ -892,7 +980,7 @@ function createBallpit(
       spheres.config.controlSphere0 = false;
     },
   });
-  function initialize(cfg: any) {
+  function initialize(cfg: Partial<SpheresConfig>) {
     if (spheres) {
       threeInstance.clear();
       threeInstance.scene.remove(spheres);
@@ -925,10 +1013,11 @@ function createBallpit(
   };
 }
 
-interface BallpitProps {
+type BallpitConfig = Partial<SpheresConfig>;
+
+interface BallpitProps extends BallpitConfig {
   className?: string;
   followCursor?: boolean;
-  [key: string]: any;
 }
 
 const Ballpit: React.FC<BallpitProps> = ({

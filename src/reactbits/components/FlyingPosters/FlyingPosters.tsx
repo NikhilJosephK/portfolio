@@ -159,17 +159,19 @@ void main() {
 }
 `;
 
-function AutoBind(self: any, { include, exclude }: AutoBindOptions = {}) {
-  const getAllProperties = (object: any): Set<[any, string | symbol]> => {
-    const properties = new Set<[any, string | symbol]>();
+function AutoBind<T extends object>(
+  self: T,
+  { include, exclude }: AutoBindOptions = {}
+): T {
+  const getAllProperties = (obj: object): Set<[object, string | symbol]> => {
+    const properties = new Set<[object, string | symbol]>();
+    let current: object | null = obj;
     do {
-      for (const key of Reflect.ownKeys(object)) {
-        properties.add([object, key]);
+      for (const key of Reflect.ownKeys(current)) {
+        properties.add([current, key]);
       }
-    } while (
-      (object = Reflect.getPrototypeOf(object)) &&
-      object !== Object.prototype
-    );
+      current = Reflect.getPrototypeOf(current);
+    } while (current && current !== Object.prototype);
     return properties;
   };
 
@@ -184,11 +186,15 @@ function AutoBind(self: any, { include, exclude }: AutoBindOptions = {}) {
     return true;
   };
 
-  for (const [object, key] of getAllProperties(self.constructor.prototype)) {
+  for (const [proto, key] of getAllProperties(self.constructor.prototype)) {
     if (key === "constructor" || !filter(key)) continue;
-    const descriptor = Reflect.getOwnPropertyDescriptor(object, key);
+    const descriptor = Reflect.getOwnPropertyDescriptor(proto, key);
     if (descriptor && typeof descriptor.value === "function") {
-      self[key] = self[key].bind(self);
+      const record = self as unknown as Record<PropertyKey, unknown>;
+      const value = record[key];
+      if (typeof value === "function") {
+        record[key] = (value as (...args: unknown[]) => unknown).bind(self);
+      }
     }
   }
   return self;
