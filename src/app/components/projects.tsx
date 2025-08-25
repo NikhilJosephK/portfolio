@@ -77,46 +77,64 @@ export function Projects() {
                 pauseOnHover={false}
               >
                 <Card>
-                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                    Card 1
-                  </h3>
-                  <div className="w-full h-full m-4 bg-white rounded-2xl">
-                    <video
-                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-one.mp4"
-                      autoPlay
-                      muted
-                      loop
-                      className="w-full h-full object-cover rounded-2xl"
-                    />
-                  </div>
+                  <a
+                    href="https://aajtraders.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                      AAJ TRADERS
+                    </h3>
+                    <div className="w-full h-full m-4 bg-white rounded-2xl">
+                      <video
+                        src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-one.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    </div>
+                  </a>
                 </Card>
                 <Card>
-                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                    Card 2
-                  </h3>
-                  <div className="w-full h-full m-4 bg-white rounded-2xl">
-                    <video
-                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-two.mp4"
-                      autoPlay
-                      muted
-                      loop
-                      className="w-full h-full object-cover rounded-2xl"
-                    />
-                  </div>
+                  <a
+                    href="https://svetguide.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                      SVETGUIDE
+                    </h3>
+                    <div className="w-full h-full m-4 bg-white rounded-2xl">
+                      <video
+                        src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-two.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    </div>
+                  </a>
                 </Card>
                 <Card>
-                  <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
-                    Card 3
-                  </h3>
-                  <div className="w-full h-full m-4 bg-white rounded-2xl">
-                    <video
-                      src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-3.mp4"
-                      autoPlay
-                      muted
-                      loop
-                      className="w-full h-full object-cover rounded-2xl"
-                    />
-                  </div>
+                  <a
+                    href="https://ai-notepad-eight.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <h3 className="text-white text-base font-light border-b py-2 pl-4 bg-gradient-to-t from-blue-500/40 to-black rounded-t-2xl">
+                      AI NOTEPAD
+                    </h3>
+                    <div className="w-full h-full m-4 bg-white rounded-2xl">
+                      <video
+                        src="https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/videos/number-3.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    </div>
+                  </a>
                 </Card>
               </CardSwap>
             </div>
