@@ -11,18 +11,38 @@ export function Contact() {
           Contact Me.
         </p>
         <div className="flex flex-col items-end">
-          <p className="text-black text-xl font-extralight text-right">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.linkedin.com/in/nikhil-joseph-k/"
+            className="text-black text-xl font-extralight text-right hover:border-b-2 hover:border-black transition-all duration-50"
+          >
             Linkedin
-          </p>
-          <p className="text-black text-xl font-extralight text-right">
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/nikhiljosephk"
+            className="text-black text-xl font-extralight text-right hover:border-b-2 hover:border-black transition-all duration-50"
+          >
             GitHub
-          </p>
-          <p className="text-black text-xl font-extralight text-right">
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="mailto:nikhilnjk@gmail.com"
+            className="text-black text-xl font-extralight text-right hover:border-b-2 hover:border-black transition-all duration-50"
+          >
             nikhilnjk@gmail.com
-          </p>
-          <p className="text-black text-xl font-extralight text-right">
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="tel:+919746476718"
+            className="text-black text-xl font-extralight text-right hover:border-b-2 hover:border-black transition-all duration-50"
+          >
             9746476718
-          </p>
+          </a>
           <BigArrow className="w-[5rem] h-[5rem] rotate-180 mt-10" />
         </div>
       </div>
