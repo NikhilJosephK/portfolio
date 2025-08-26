@@ -6,9 +6,23 @@ import FlyingPosters from "@/reactbits/components/FlyingPosters/FlyingPosters";
 
 export function TechStack() {
   const items = [
-    "https://picsum.photos/500/500?grayscale",
-    "https://picsum.photos/600/600?grayscale",
-    "https://picsum.photos/400/400?grayscale",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-1.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-2.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-3.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-4.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-5.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-6.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-7.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-8.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-9.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-10.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-11.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-12.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-13.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-14.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-15.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-16.png",
+    "https://ebwtwkumuwelcxqfrpag.supabase.co/storage/v1/object/public/images/portfolio-stack-17.png",
   ];
   const [time, setTime] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -69,6 +83,3 @@ export function TechStack() {
     </section>
   );
 }
-
-
-
